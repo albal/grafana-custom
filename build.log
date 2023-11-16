@@ -1,0 +1,33 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.06kB done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/grafana/grafana:latest
+#3 DONE 0.5s
+
+#4 [1/4] FROM docker.io/grafana/grafana:latest@sha256:be0359383ed7d8436c53760cf8ff3671043ee3e0169f363ef33ecb329102fe4c
+#4 DONE 0.0s
+
+#5 [2/4] RUN mkdir -p "/var/lib/grafana-plugins" &&     chown -R grafana:0 "/var/lib/grafana-plugins" &&     if [ false = "true" ]; then       if grep -i -q alpine /etc/issue; then         apk add --no-cache udev ttf-opensans chromium &&         ln -s /usr/bin/chromium-browser "/usr/bin/chrome";       else         cd /tmp &&         curl -sLO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&         DEBIAN_FRONTEND=noninteractive &&         apt-get update -q &&         apt-get install -q -y ./google-chrome-stable_current_amd64.deb &&         rm -rf /var/lib/apt/lists/* &&         rm ./google-chrome-stable_current_amd64.deb &&         ln -s /usr/bin/google-chrome "/usr/bin/chrome";       fi     fi
+#5 CACHED
+
+#6 [3/4] RUN if [ false = "true" ]; then       grafana-cli         --pluginsDir "/var/lib/grafana-plugins"         --pluginUrl https://github.com/grafana/grafana-image-renderer/releases/latest/download/plugin-linux-x64-glibc-no-chromium.zip         plugins install grafana-image-renderer;     fi
+#6 CACHED
+
+#7 [4/4] RUN if [ ! -z "grafana-clock-panel,grafana-simple-json-datasource" ]; then       OLDIFS=$IFS;       IFS=',';       set -e ;       for plugin in grafana-clock-panel,grafana-simple-json-datasource; do         IFS=$OLDIFS;         if expr match "$plugin" '.*\;.*'; then           pluginUrl=$(echo "$plugin" | cut -d';' -f 1);           pluginInstallFolder=$(echo "$plugin" | cut -d';' -f 2);           grafana-cli --pluginUrl ${pluginUrl} --pluginsDir "/var/lib/grafana-plugins" plugins install "${pluginInstallFolder}";         else           grafana-cli --pluginsDir "/var/lib/grafana-plugins" plugins install ${plugin};         fi       done     fi
+#7 CACHED
+
+#8 exporting to image
+#8 exporting layers done
+#8 writing image sha256:8985ccbb81d409361587cbf5b4fe1333f800bb86b46fe32593cfaf30d44315b1 done
+#8 naming to docker.io/library/grafana-custom done
+#8 DONE 0.0s
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview
